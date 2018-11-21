@@ -70,6 +70,7 @@ public class Reminder {
 
     public static void main(String[] args) {
         Reminder reminder = new Reminder("Testing", Time.valueOf(LocalTime.now()));
+        getReminderList().add(reminder);
         joinAllThreads();
     }
 }
