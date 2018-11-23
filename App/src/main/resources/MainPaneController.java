@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
@@ -32,11 +33,23 @@ public class MainPaneController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        
         reminderListView.setOnMouseClicked(val -> {
-            reminderListView.getSelectionModel().getSelectedItem();
+            Reminder rem = reminderListView.getSelectionModel().getSelectedItem();
+            selectedReminderTextArea.setText(rem.getMessage() + "\n" + rem.getTime().toString());
          });
+        
+        reminderListView.setCellFactory(param -> {
+            ListCell<Reminder> cell = new ListCell<Reminder>() {
+                @Override
+                protected void updateItem(Reminder item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(item != null) {
+                        setText(item.getTime().toString() + "\n" + item.getMessage());
+                    }
+                }
+            };
+            return new ListCell<Reminder>();
+        });
     }    
 
     @FXML
