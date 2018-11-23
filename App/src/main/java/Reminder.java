@@ -16,16 +16,15 @@ public class Reminder {
     public Reminder(String message, Time time) {
         thread = new Thread(() -> {
             try {
+                countSem.acquire();
+                count++;
+                countSem.release();
                 Thread.sleep(time.getTime() - Time.valueOf(LocalTime.now()).getTime());
                 SystemTray tray = SystemTray.getSystemTray();
                 Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
                 TrayIcon icon = new TrayIcon(image);
                 tray.add(icon);
                 icon.displayMessage("Reminder", message, TrayIcon.MessageType.WARNING);
-
-                countSem.acquire();
-                count++;
-                countSem.release();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -60,7 +59,9 @@ public class Reminder {
     public static void joinAllThreads() {
         for (Reminder rem : reminderList) {
             try {
-                rem.getThread().wait();
+                synchronized (rem.getThread()) {
+                    rem.getThread().wait();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
