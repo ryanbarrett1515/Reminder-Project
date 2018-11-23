@@ -11,9 +11,13 @@ public class Reminder {
     private static Semaphore countSem = new Semaphore(1);
     private static List<Reminder> reminderList = new ArrayList<>();
     private Thread thread;
+    private Time time;
+    private String message;
 
 
     public Reminder(String message, Time time) {
+        this.time = time;
+        this.message = message;
         thread = new Thread(() -> {
             try {
                 countSem.acquire();
@@ -56,6 +60,22 @@ public class Reminder {
         this.thread = thread;
     }
 
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public static void joinAllThreads() {
         for (Reminder rem : reminderList) {
             try {
@@ -68,6 +88,14 @@ public class Reminder {
         }
     }
 
+    public boolean equals(Reminder ob) {
+        boolean retVal = (ob instanceof Reminder);
+        if(retVal) {
+            Reminder other = (Reminder) ob;
+            retVal = other.getTime().equals(time) && other.getMessage().equals(message);
+        }
+        return retVal;
+    }
 
     public static void main(String[] args) {
         Reminder reminder = new Reminder("Testing", Time.valueOf(LocalTime.now()));
