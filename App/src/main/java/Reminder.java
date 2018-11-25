@@ -85,7 +85,7 @@ public class Reminder {
         for (Reminder rem : reminderList) {
             try {
                 if (rem.getThread().isAlive()) {
-                        rem.getThread().join();
+                    rem.getThread().join();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -113,9 +113,49 @@ public class Reminder {
             } else {
                 retVal = new ArrayList<>();
             }
+            for (Reminder rem : retVal) {
+                if (rem.getThread() != null && rem.getThread().isAlive()) {
+                    rem.getThread().interrupt();
+                    rem.setThread(new Thread(() -> {
+                        try {
+                            countSem.acquire();
+                            count++;
+                            countSem.release();
+                            Thread.sleep(rem.getTime().getTime() - Time.valueOf(LocalTime.now()).getTime());
+                            SystemTray tray = SystemTray.getSystemTray();
+                            Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
+                            TrayIcon icon = new TrayIcon(image);
+                            tray.add(icon);
+                            icon.displayMessage("Reminder", rem.getMessage(), TrayIcon.MessageType.WARNING);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }));
+                    rem.getThread().start();
+                } else {
+                    rem.setThread(new Thread(() -> {
+                        try {
+                            countSem.acquire();
+                            count++;
+                            countSem.release();
+                            Thread.sleep(rem.getTime().getTime() - Time.valueOf(LocalTime.now()).getTime());
+                            SystemTray tray = SystemTray.getSystemTray();
+                            Image image = Toolkit.getDefaultToolkit().createImage("icon.png");
+                            TrayIcon icon = new TrayIcon(image);
+                            tray.add(icon);
+                            icon.displayMessage("Reminder", rem.getMessage(), TrayIcon.MessageType.WARNING);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }));
+                    rem.getThread().start();
+                }
+            }
         } catch (Exception e) {
             retVal = new ArrayList<>();
+            System.out.println("An error occured while deserializing the reminder list");
         }
+
         return retVal;
     }
 

@@ -6,6 +6,8 @@
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -50,6 +52,12 @@ public class MainPaneController implements Initializable {
             };
             return new ListCell<Reminder>();
         });
+        
+        ObservableList<Reminder> remList = FXCollections.observableArrayList();
+        for(Reminder rem : Reminder.getReminderList()) {
+            remList.add(rem);
+        }
+        reminderListView.setItems(remList);
     }    
 
     @FXML
