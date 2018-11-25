@@ -27,19 +27,12 @@ public class MainPaneController implements Initializable {
     private ListView<Reminder> reminderListView;
     @FXML
     private Button newReminderButton;
-    @FXML
-    private TextArea selectedReminderTextArea;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        reminderListView.setOnMouseClicked(val -> {
-            Reminder rem = reminderListView.getSelectionModel().getSelectedItem();
-            selectedReminderTextArea.setText(rem.getMessage() + "\n" + rem.getTime().toString());
-         });
-        
         reminderListView.setCellFactory(param -> {
             ListCell<Reminder> cell = new ListCell<Reminder>() {
                 @Override
